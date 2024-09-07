@@ -1,0 +1,66 @@
+@page
+@model StudentCourses.Pages_Students.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Student</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Student.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Student.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.StudentCourses)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach(var course in Model.Student.StudentCourses!)
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="CourseIDToDelete" value="@course.Course.CourseID" />
+                    @Html.DisplayFor(model => course.Course.Description)
+                    <button type="submit" class="btn btn-danger btn-sm my-1" asp-page-handler="DropCourse" asp-route-id="@Model.Student.StudentID">Drop Course</button>
+                    <br>
+                </form>
+            }
+        </dd>
+        <form method="post">
+            <div class="row align-items-center">
+                <dt class="col-sm-2">
+                    <label asp-for="CourseIDToAdd" class="control-label"></label>
+                </dt>
+                <div class="col-auto">
+                    <select asp-for="CourseIDToAdd" asp-items="Model.CoursesDropDown" class="form-select">
+                        <option value="">Choose...</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary" asp-page-handler="AddCourse" asp-route-id="@Model.Student.StudentID">Add Course</button>
+                </div>
+                <div class="col-auto">
+                    <span asp-validation-for="CourseIDToAdd" class="text-danger"></span>
+                </div>
+        </form>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Student.StudentID">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
